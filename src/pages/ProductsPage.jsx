@@ -120,6 +120,7 @@ const ProductsPage = () => {
                   <th>Status</th>
                   <th>Supplier</th>
                   <th>Actions</th>
+                  <th>Part Number</th>
                 </tr>
               </thead>
               <tbody>
@@ -142,6 +143,8 @@ const ProductsPage = () => {
                         </button>
                       </div>
                     </td>
+                    <td><span style={{ fontWeight: 500, color: 'var(--text-main)' }}>{p.partNumber || '—'}</span></td>
+                    
                   </tr>
                 ))}
               </tbody>
