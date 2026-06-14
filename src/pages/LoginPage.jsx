@@ -73,9 +73,9 @@ const LoginPage = () => {
           </button>
         </form>
 
-        <p style={{ textAlign: 'center', marginTop: 20, fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+        {/* <p style={{ textAlign: 'center', marginTop: 20, fontSize: '0.78rem', color: 'var(--text-muted)' }}>
           Demo: admin@starair.com / admin123
-        </p>
+        </p> */}
       </div>
     </div>
   );
