@@ -5,7 +5,10 @@ const API = axios.create({
   withCredentials: true,
   headers: { 'Content-Type': 'application/json' },
 });
-
+// const API = axios.create({
+//   baseURL: 'http://localhost:5000/api',
+//   headers: { 'Content-Type': 'application/json' },
+// });
 // Attach JWT token to every request
 API.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
@@ -64,5 +67,10 @@ export const markAllReadAPI = () => API.patch('/notifications/read-all');
 
 // ── Audit Logs ──
 export const getAuditLogsAPI = (params) => API.get('/audit-logs', { params });
+
+// ── Tool Issues ──
+export const getToolIssuesAPI = (params) => API.get('/tool-issues', { params });
+export const createToolIssueAPI = (data) => API.post('/tool-issues', data);
+export const returnToolIssueAPI = (id, data) => API.put(`/tool-issues/${id}/return`, data);
 
 export default API;
