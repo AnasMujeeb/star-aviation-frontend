@@ -8,10 +8,21 @@ const conditions = ['New','Overhauled','Serviceable','Unserviceable','Repaired']
 const units = ['pcs','kg','liters','meters','sets','pairs','rolls'];
 
 const emptyForm = {
-  name: '', category: 'General', quantity: 0, minStockLevel: 10,
-  unit: 'pcs', expiryDate: '', manufacturingDate: '', batchNumber: '',
-  partNumber: '', serialNumber: '', condition: 'New',
-  location: 'Main Warehouse', certificationRef: '', notes: '',
+  name: '', 
+  category: 'General', 
+  quantity: 0, 
+  minStockLevel: 10,
+  unit: 'pcs', 
+  expiryDate: '', 
+  manufacturingDate: '', 
+  tsoDate: '', 
+  batchNumber: '',
+  partNumber: '', 
+  serialNumber: '', 
+  condition: 'New',
+  location: 'Main Warehouse', 
+  certificationRef: '', 
+  notes: '',
   supplier: { name: '', contact: '', email: '' },
 };
 
@@ -38,6 +49,7 @@ const AddEditProductPage = () => {
             unit: p.unit || 'pcs',
             expiryDate: p.expiryDate ? p.expiryDate.split('T')[0] : '',
             manufacturingDate: p.manufacturingDate ? p.manufacturingDate.split('T')[0] : '',
+            tsoDate: p.tsoDate ? p.tsoDate.split('T')[0] : '', // ✅ FIXED: Ab load hote waqt TSO Date yahan map hogi
             batchNumber: p.batchNumber || '',
             partNumber: p.partNumber || '',
             serialNumber: p.serialNumber || '',
@@ -79,6 +91,14 @@ const AddEditProductPage = () => {
         quantity: parseInt(form.quantity),
         minStockLevel: parseInt(form.minStockLevel),
       };
+
+      // ✅ FIXED: Agar date select nahi ki toh backend par empty string bhejney ke bajaye delete kar do
+      if (payload.tsoDate === '') {
+        delete payload.tsoDate;
+      }
+      if (payload.manufacturingDate === '') {
+        delete payload.manufacturingDate;
+      }
 
       if (isEdit) {
         await updateProductAPI(id, payload);
@@ -139,8 +159,18 @@ const AddEditProductPage = () => {
               <input className="form-input" type="date" name="expiryDate" value={form.expiryDate} onChange={handleChange} required />
             </div>
             <div className="form-group">
-              <label className="form-label">Manufacturing Date</label>
+              <label className="form-label">TSN(Time Since New)</label>
               <input className="form-input" type="date" name="manufacturingDate" value={form.manufacturingDate} onChange={handleChange} />
+            </div>
+            <div className="form-group">
+              <label className="form-label">TSO (Time Since Overhauled)</label>
+              <input 
+                className="form-input" 
+                type="date" 
+                name="tsoDate" 
+                value={form.tsoDate || ''} 
+                onChange={handleChange} 
+              />
             </div>
             <div className="form-group">
               <label className="form-label">Part Number</label>
