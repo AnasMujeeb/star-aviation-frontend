@@ -32,7 +32,7 @@ const LoginPage = () => {
     <div className="login-page">
       <div className="login-card">
         <div className="login-logo">SA</div>
-        <h1>Star Air Aviation</h1>
+        <h1>Star Air Aviation (Pvt.) Ltd</h1>
         <p className="subtitle">Inventory Management System</p>
 
         {error && <div className="alert alert-error">{error}</div>}
