@@ -648,6 +648,49 @@ tr:last-child td { border-bottom: none; }
 @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes spin { to { transform: rotate(360deg); } }
 
+/* ── Tool Issue Section ── */
+.tool-issue-section {
+  margin-top: 36px;
+  padding-top: 32px;
+  border-top: 1px solid var(--border);
+}
+
+.tool-issue-section-header {
+  margin-bottom: 22px;
+}
+
+.tool-issue-section-title {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.tool-issue-title-icon {
+  font-size: 2rem;
+  color: var(--accent);
+  flex-shrink: 0;
+  background: var(--accent-glow);
+  padding: 10px;
+  border-radius: 12px;
+}
+
+.tool-issue-section-title h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.tool-issue-section-title p {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.tool-tab-group {
+  display: flex;
+  gap: 6px;
+}
+
 /* ── Responsive ── */
 @media (max-width: 768px) {
   .sidebar { transform: translateX(-100%); }
@@ -657,4 +700,5 @@ tr:last-child td { border-bottom: none; }
   .dashboard-grid { grid-template-columns: 1fr; }
   .stats-grid { grid-template-columns: 1fr; }
   .product-detail-grid { grid-template-columns: 1fr; }
+  .tool-tab-group { flex-wrap: wrap; }
 }
