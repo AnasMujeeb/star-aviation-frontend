@@ -10,10 +10,6 @@ import ScannerPage from './pages/ScannerPage';
 import ExpiryAlertsPage from './pages/ExpiryAlertsPage';
 import AuditLogPage from './pages/AuditLogPage';
 
-// Naye pages ko yahan import kiya hai
-import IssueToolPage from './pages/issuetool'; 
-import IssuedListPage from './pages/issuedlist'; 
-
 const pageTitles = {
   '/': 'Dashboard',
   '/products': 'Products',
@@ -21,8 +17,6 @@ const pageTitles = {
   '/scanner': 'Barcode Scanner',
   '/expiry-alerts': 'Expiry Alerts',
   '/audit-logs': 'Audit Logs',
-  '/tool-issue': 'Issue Tool',         // Naya Title added
-  '/issued-list': 'Issued Tools List', // Naya Title added
 };
 
 const App = () => {
@@ -36,10 +30,8 @@ const App = () => {
 
   return (
     <Routes>
-      {/* Public Route */}
       <Route path="/login" element={user ? <Navigate to="/" replace /> : <LoginPage />} />
 
-      {/* Protected Routes (Layout ke andar) */}
       <Route element={
         <ProtectedRoute>
           <Layout title={getTitle()} />
@@ -52,13 +44,8 @@ const App = () => {
         <Route path="/scanner" element={<ScannerPage />} />
         <Route path="/expiry-alerts" element={<ExpiryAlertsPage />} />
         <Route path="/audit-logs" element={<AuditLogPage />} />
-        
-        {/* Naye Routes yahan add kar diye hain */}
-        <Route path="/tool-issue" element={<IssueToolPage />} />
-        <Route path="/issued-list" element={<IssuedListPage />} />
       </Route>
 
-      {/* Wildcard Route for Redirect */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
