@@ -83,7 +83,20 @@ const DashboardPage = () => {
     setToolFormSuccess('');
     setToolFormLoading(true);
     try {
-      await createToolIssueAPI(toolForm);
+      // ─── TIMEZONE FIX START ───
+      const [datePart, timePart] = toolForm.issuedAt.split('T');
+      const [year, month, day] = datePart.split('-').map(Number);
+      const [hours, minutes] = timePart.split(':').map(Number);
+      const localIssuedAt = new Date(year, month - 1, day, hours, minutes);
+
+      const payload = {
+        ...toolForm,
+        issuedAt: localIssuedAt.toISOString(), 
+      };
+
+      await createToolIssueAPI(payload);
+      // ─── TIMEZONE FIX END ───
+
       setToolFormSuccess('Tool issued successfully!');
       setToolForm({
         toolName: '',
@@ -110,7 +123,20 @@ const DashboardPage = () => {
     if (!returnModal) return;
     setReturnLoading(true);
     try {
-      await returnToolIssueAPI(returnModal._id, returnForm);
+      // ─── TIMEZONE FIX START ───
+      const [datePart, timePart] = returnForm.returnedAt.split('T');
+      const [year, month, day] = datePart.split('-').map(Number);
+      const [hours, minutes] = timePart.split(':').map(Number);
+      const localReturnedAt = new Date(year, month - 1, day, hours, minutes);
+
+      const payload = {
+        ...returnForm,
+        returnedAt: localReturnedAt.toISOString(),
+      };
+
+      await returnToolIssueAPI(returnModal._id, payload);
+      // ─── TIMEZONE FIX END ───
+
       setReturnModal(null);
       fetchToolIssues();
     } catch (err) {
