@@ -78,43 +78,95 @@ const AddEditProductPage = () => {
       setForm((f) => ({ ...f, [name]: value }));
     }
   };
-
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
-    setSuccess('');
-    setLoading(true);
+  e.preventDefault();
+  setError('');
+  setSuccess('');
+  setLoading(true);
 
-    try {
-      const payload = {
-        ...form,
-        quantity: parseInt(form.quantity),
-        minStockLevel: parseInt(form.minStockLevel),
-      };
+  try {
+    const payload = {
+      ...form,
+      quantity: parseInt(form.quantity) || 0,
+      minStockLevel: parseInt(form.minStockLevel) || 0,
+      supplier: { ...form.supplier } // 🔄 Supplier object ko copy kiya taake nested fields handle ho sakein
+    };
 
-      // ✅ FIXED: Agar date select nahi ki toh backend par empty string bhejney ke bajaye delete kar do
-      if (payload.tsoDate === '') {
-        delete payload.tsoDate;
-      }
-      if (payload.manufacturingDate === '') {
-        delete payload.manufacturingDate;
-      }
-
-      if (isEdit) {
-        await updateProductAPI(id, payload);
-        setSuccess('Product updated successfully!');
-      } else {
-        await createProductAPI(payload);
-        setSuccess('Product created successfully!');
-        setForm(emptyForm);
-      }
-    } catch (err) {
-      const msg = err.response?.data?.message || err.response?.data?.errors?.map(e => e.msg).join(', ') || 'Operation failed';
-      setError(msg);
-    } finally {
-      setLoading(false);
+    // ✅ FIXED: Sari Dates agar khali hain toh backend par bhejney ke bajaye delete kar do
+    if (payload.expiryDate === '') {
+      delete payload.expiryDate;
     }
-  };
+    if (payload.tsoDate === '') {
+      delete payload.tsoDate;
+    }
+    if (payload.manufacturingDate === '') {
+      delete payload.manufacturingDate;
+    }
+
+    // ✅ FIXED: Supplier fields agar khali hain toh unhe saaf karo
+    if (payload.supplier) {
+      if (payload.supplier.name === '') delete payload.supplier.name;
+      if (payload.supplier.contact === '') delete payload.supplier.contact;
+      if (payload.supplier.email === '') delete payload.supplier.email;
+
+      // Agar supplier ke andar ab kuch nahi bacha ya naam hi gayab hai, toh poora object hi delete kar do
+      if (Object.keys(payload.supplier).length === 0 || !payload.supplier.name) {
+        delete payload.supplier;
+      }
+    }
+
+    if (isEdit) {
+      await updateProductAPI(id, payload);
+      setSuccess('Product updated successfully!');
+    } else {
+      await createProductAPI(payload);
+      setSuccess('Product created successfully!');
+      setForm(emptyForm);
+    }
+  } catch (err) {
+    const msg = err.response?.data?.message || err.response?.data?.errors?.map(e => e.msg).join(', ') || 'Operation failed';
+    setError(msg);
+  } finally {
+    setLoading(false);
+  }
+};
+
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   setError('');
+  //   setSuccess('');
+  //   setLoading(true);
+
+  //   try {
+  //     const payload = {
+  //       ...form,
+  //       quantity: parseInt(form.quantity),
+  //       minStockLevel: parseInt(form.minStockLevel),
+  //     };
+
+  //     // ✅ FIXED: Agar date select nahi ki toh backend par empty string bhejney ke bajaye delete kar do
+  //     if (payload.tsoDate === '') {
+  //       delete payload.tsoDate;
+  //     }
+  //     if (payload.manufacturingDate === '') {
+  //       delete payload.manufacturingDate;
+  //     }
+
+  //     if (isEdit) {
+  //       await updateProductAPI(id, payload);
+  //       setSuccess('Product updated successfully!');
+  //     } else {
+  //       await createProductAPI(payload);
+  //       setSuccess('Product created successfully!');
+  //       setForm(emptyForm);
+  //     }
+  //   } catch (err) {
+  //     const msg = err.response?.data?.message || err.response?.data?.errors?.map(e => e.msg).join(', ') || 'Operation failed';
+  //     setError(msg);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   if (fetching) {
     return <div className="loading-container"><div className="spinner" /></div>;
@@ -134,29 +186,29 @@ const AddEditProductPage = () => {
         {error && <div className="alert alert-error">{error}</div>}
         {success && <div className="alert alert-success">{success}</div>}
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} noValidate >
           <div className="form-grid">
             <div className="form-group">
               <label className="form-label">Product Name *</label>
               <input className="form-input" name="name" value={form.name} onChange={handleChange} required />
             </div>
             <div className="form-group">
-              <label className="form-label">Category *</label>
+              <label className="form-label">Category </label>
               <select className="form-select" name="category" value={form.category} onChange={handleChange}>
                 {categories.map((c) => <option key={c} value={c}>{c}</option>)}
               </select>
             </div>
             <div className="form-group">
-              <label className="form-label">Quantity *</label>
-              <input className="form-input" type="number" name="quantity" value={form.quantity} onChange={handleChange} min="0" required />
+              <label className="form-label">Quantity </label>
+              <input className="form-input" type="number" name="quantity" value={form.quantity} onChange={handleChange} min="0"  />
             </div>
             <div className="form-group">
               <label className="form-label">Min Stock Level</label>
               <input className="form-input" type="number" name="minStockLevel" value={form.minStockLevel} onChange={handleChange} min="0" />
             </div>
             <div className="form-group">
-              <label className="form-label">Expiry Date *</label>
-              <input className="form-input" type="date" name="expiryDate" value={form.expiryDate} onChange={handleChange} required />
+              <label className="form-label">Expiry Date </label>
+              <input className="form-input" type="date" name="expiryDate" value={form.expiryDate} onChange={handleChange} />
             </div>
             <div className="form-group">
               <label className="form-label">TSN(Time Since New)</label>
@@ -209,8 +261,8 @@ const AddEditProductPage = () => {
           <h4 style={{ margin: '24px 0 12px', fontSize: '0.95rem', fontWeight: 600 }}>Supplier Information</h4>
           <div className="form-grid">
             <div className="form-group">
-              <label className="form-label">Supplier Name *</label>
-              <input className="form-input" name="supplier.name" value={form.supplier.name} onChange={handleChange} required />
+              <label className="form-label">Supplier Name </label>
+              <input className="form-input" name="supplier.name" value={form.supplier.name} onChange={handleChange}  />
             </div>
             <div className="form-group">
               <label className="form-label">Contact</label>
